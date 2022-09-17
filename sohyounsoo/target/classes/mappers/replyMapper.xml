@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.board.mappers.reply">
+	<!-- 댓글 조회 -->
+	<select id="selectReplyList" parameterType="com.board.domain.ReplyVO" resultType="com.board.domain.ReplyVO">
+		WITH RECURSIVE cte AS
+		(
+		SELECT 
+			a.rno,
+			a.writer,
+			a.regDate,
+			a.content,
+			a.parnt_rno,
+			a.depth,
+			rno as sort,
+			CAST(rno AS char(99)) x
+		 FROM tbl_reply a
+		 WHERE parnt_rno = 0
+		 AND bno = #{bno}
+		 UNION ALL
+		SELECT 
+				a.rno,
+				a.writer,
+				a.regDate,
+				a.content, 
+				a.parnt_rno,
+				a.depth,
+				sort,
+				CONCAT(b.x, '-', a.rno) x
+		  FROM tbl_reply a
+		 INNER JOIN cte b
+		    ON a.parnt_rno = b.rno
+		)
+		SELECT
+		     *
+		FROM cte
+		order by x
+		limit #{displayPost}, #{postNum}
+	</select>
+	
+	<!-- 댓글 작성 -->
+	<insert id="writeReply" parameterType="com.board.domain.ReplyVO">
+	    INSERT INTO 
+	    	tbl_reply (
+	    	bno
+	    	,writer
+	    	,content
+	    	<if test='parnt_rno != null and !parnt_rno.equals("")'>
+		    	,parnt_rno
+		    	,depth
+	    	</if>
+	    	,regDate
+	    )
+        VALUE (
+	        #{bno},
+	        #{writer},
+	        #{content},
+	        <if test='parnt_rno != null and !parnt_rno.equals("")'>
+		        #{parnt_rno},
+		        (SELECT ifnull(max(depth) + 1, 0) FROM tbl_reply tr WHERE bno = #{bno} and rno = #{parnt_rno}),
+	        </if>
+	        #{regDate}
+        )
+	</insert>
+	    
+	<!-- 댓글 수정 -->
+	<update id="updateReply" parameterType="com.board.domain.ReplyVO">
+		UPDATE 
+			tbl_reply 
+		SET
+		content = #{content}
+		WHERE rno = #{rno}
+		AND bno = #{bno}    
+	</update>
+	
+	<!-- 댓글 삭제 -->
+	<delete id="deleteReply" parameterType="com.board.domain.ReplyVO">
+	    DELETE 
+	    FROM tbl_reply
+	    WHERE rno = #{rno}
+        AND bno = #{bno}    
+	</delete>
+	
+	<!-- 댓글 갯수조회 -->
+	<select id="replyCnt" parameterType="com.board.domain.ReplyVO" resultType="int">
+		SELECT 
+			count(*) 
+		FROM tbl_reply
+		WHERE bno = #{bno}  	     
+	</select>
+</mapper>
