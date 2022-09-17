@@ -139,6 +139,7 @@ var replyPage = {
 	
 	</c:forEach>
 
+<!-- 댓글 작성 -->
 <form id="cmtFrm" name="cmtFrm" method="post" onsubmit="return false">
 <input type="hidden" id="bno" name="bno" value="${bno}">
 <input type="hidden" id="nowPage" name="nowPage" value="">
