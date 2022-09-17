@@ -28,9 +28,28 @@ var replyPage = {
         });
 	},
 	
+	// 답글 폼
 	nestedReply : function(rno, index) {
-// 		$("[id^='nestedDiv']").css("display" ,"none");
 		$("[id^='nestedDiv']").hide();
+		$("#nestedDiv"+ index).empty(); // 초기화
+		var html = "";
+		html += '<form id ="nestedFrm_'+index+'" method="post" onsubmit="return false">';
+		html += '<input type="hidden" id="bno" name="bno" value="'+${bno}+'">';
+		html += '<input type="hidden" id="parnt_rno" name="parnt_rno" value="'+rno+'">';
+		html += '<div>';
+		html += 	'<p>';
+		html += 		'<label>답글 작성자</label> <input type="text" name="writer">';
+		html += 	'</p>';
+		html += 	'<p>';
+		html += 		'<textarea rows="5" cols="50" name="content"></textarea>';
+		html += 	'</p>';
+		html += 	'<p>';
+		html += 		'<button onclick="javascript:replyPage.writeReply('+index+');">답글 작성</button>';
+		html += 	'</p>';
+		html += '</div>';
+		html += '</from>';
+		
+ 		$("#nestedDiv"+ index).append(html); // 태그 추가
 		$("#nestedDiv"+ index).show();
 		
 	},
@@ -116,26 +135,8 @@ var replyPage = {
 			</c:otherwise>
 		</c:choose>
 		
-		<div id="nestedDiv${status.index}" name="nestedDiv${status.index}" style="display:none">
-			<form id="nestedFrm_${status.index}" name="nestedFrm_${status.index}" method="post" onsubmit="return false">
-			<input type="hidden" id="bno" name="bno" value="${bno}">
-			<input type="hidden" id="parnt_rno" name="parnt_rno" value="${reply.rno}">
-			
-			
-				<div>
-					<p>
-						<label>답글 작성자</label> <input type="text" name="writer">
-					</p>
-					<p>
-						<textarea rows="5" cols="50" name="content"></textarea>
-					</p>
-					<p>
-						<button onclick="javascript:replyPage.writeReply('${status.index}')">답글 작성</button>
-					</p>
-				</div>
-				
-			</form>
-		</div>
+		<!-- 답글 div -->
+		<div id="nestedDiv${status.index}" style="display:none"></div>
 	
 	</c:forEach>
 

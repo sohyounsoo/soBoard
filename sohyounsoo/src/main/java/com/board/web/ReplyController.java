@@ -77,7 +77,7 @@ public class ReplyController {
 	public Map<String, Object> updateReply(ReplyVO vo) throws Exception {
  		Map<String, Object> map = new HashMap<String, Object>();
 		replyService.updateReply(vo);
-		map.put("msg", "성공적으로 수정하였습니다.");
+ 		map.put("msg", "성공적으로 수정하였습니다.");
 		
 		return map;
 	}
