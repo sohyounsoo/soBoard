@@ -6,5 +6,5 @@
 스프링
 
 
-사용한 기술 : java, ajax, jsp
-아마존 rds -> postSql
+언어 : java
+db : 아마존 rds -> postSql
