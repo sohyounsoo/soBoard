@@ -8,4 +8,4 @@
 언어 : java
 
 
-db : 아마존 rds -> postSql
+db : 아마존 rds, postSql
